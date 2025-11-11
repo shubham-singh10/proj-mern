@@ -1,0 +1,16 @@
+# ────────────────────────────────
+# Frontend (Vite / React)
+# ────────────────────────────────
+client/node_modules/
+client/dist/
+client/.env
+
+# Local dev
+frontend/.vite/
+
+# ────────────────────────────────
+# Backend (Node + Express)
+# ────────────────────────────────
+backend/node_modules/
+backend/dist/
+backend/.env
