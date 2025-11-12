@@ -42,8 +42,8 @@ This project was created as part of the **MERN Stack Developer assignment** .
 
 ## 📦 Folder Structure
 
-my-qa-app/
-├── frontend/ # React + Vite + TypeScript app
+PROJ-MERN/
+├── client/ # React + Vite + TypeScript app
 │ └── src/
 │ ├── components/
 │ └── api/
@@ -80,7 +80,7 @@ my-qa-app/
 
 ### 3.-->  Frontend Setup
 
-- cd ./frontend
+- cd ./client
 - npm install
 - npm run dev
 
