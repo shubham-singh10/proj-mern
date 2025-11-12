@@ -3,6 +3,8 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { LogIn, Mail, Lock, Eye, EyeOff, Loader2 } from "lucide-react";
 import API from "../services/api";
+import axios from "axios";
+import { useAuth } from "../context/authContext";
 
 interface LoginFormData {
     email: string;
@@ -13,6 +15,7 @@ export default function Login() {
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
+    const { login } = useAuth();
 
     const {
         register,
@@ -29,24 +32,25 @@ export default function Login() {
             const result = await API.post("/auth/login", { email: data.email, password: data.password });
             const response = result.data;
             // Store token and user info
-            localStorage.setItem("token", response.token);
-            localStorage.setItem("role", response.user.role)
+            login(response.user);
             if (response.user.role === "manager") {
                 navigate("/manager")
+            } else if(response.user.role === "admin"){
+                navigate("/admin")
             } else {
-                // Redirect to home page
-                navigate("/");
+                // Redirect to employee page
+                navigate("/employee");
 
             }
 
 
         } catch (error: unknown) {
-
-            if (typeof error === "object" && error !== null && "message" in error) {
-                setError("root", {
-                    message: (error as { message?: string }).message || "Something went wrong",
-                });
+            // console.error("Login error:", error);
+            if (axios.isAxiosError(error)) {
+                const serverMessage = error.response?.data?.message || "Something went wrong";
+                setError("root", { message: serverMessage });
             } else {
+                // Other errors
                 setError("root", { message: "Something went wrong" });
             }
         } finally {

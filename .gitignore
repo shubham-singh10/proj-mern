@@ -14,3 +14,9 @@ frontend/.vite/
 backend/node_modules/
 backend/dist/
 backend/.env
+
+# ────────────────────────────────
+# General
+# ────────────────────────────────
+.DS_Store
+.vscode

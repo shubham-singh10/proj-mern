@@ -3,13 +3,15 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { UserPlus, Mail, Lock, User, Eye, EyeOff, Loader2, Shield } from "lucide-react";
 import API from "../services/api";
+import axios from "axios";
+import { useAuth } from "../context/authContext";
 
 interface RegisterFormData {
     name: string;
     email: string;
     password: string;
     confirmPassword: string;
-    role: "member" | "manager";
+    role: "employee" | "manager" | "admin";
 }
 
 export default function Register() {
@@ -17,7 +19,7 @@ export default function Register() {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
-
+    const { login } = useAuth();
     const {
         register,
         handleSubmit,
@@ -26,7 +28,7 @@ export default function Register() {
         setError,
     } = useForm<RegisterFormData>({
         defaultValues: {
-            role: "member",
+            role: "employee",
         },
     });
 
@@ -38,29 +40,32 @@ export default function Register() {
         try {
             // Remove confirmPassword before sending to API
             const { confirmPassword, ...registerData } = data;
-
+            // console.log("Register Data: ", registerData);
             // Replace with your actual API call
-            const result = await API.post("/api/auth/register", {
+            const result = await API.post("/auth/register", {
                 name: registerData.name,
                 email: registerData.email,
                 password: registerData.password,
                 role: registerData.role,
             });
             const response = result.data;
+            login(response.user);
+            if (response.user.role === "manager") {
+                navigate("/manager")
+            } else if (response.user.role === "admin") {
+                navigate("/admin")
+            } else {
+                // Redirect to employee page
+                navigate("/employee");
 
-            // Store token and user info
-            localStorage.setItem("token", response.token);
-            localStorage.setItem("userId", response.user.id);
-
-            // Redirect to home page
-            navigate("/");
+            }
         } catch (error: unknown) {
 
-            if (typeof error === "object" && error !== null && "message" in error) {
-                setError("root", {
-                    message: (error as { message?: string }).message || "Something went wrong",
-                });
+            if (axios.isAxiosError(error)) {
+                const serverMessage = error.response?.data?.message || "Something went wrong";
+                setError("root", { message: serverMessage });
             } else {
+                // Other errors
                 setError("root", { message: "Something went wrong" });
             }
         } finally {
@@ -238,13 +243,13 @@ export default function Register() {
                                 <label className="relative">
                                     <input
                                         type="radio"
-                                        value="member"
+                                        value="employee"
                                         {...register("role")}
                                         className="peer sr-only"
                                     />
                                     <div className="flex flex-col items-center p-4 border-2 border-gray-300 rounded-lg cursor-pointer peer-checked:border-indigo-600 peer-checked:bg-indigo-50 transition-all hover:border-indigo-400">
                                         <User className="h-6 w-6 text-gray-600 peer-checked:text-indigo-600" />
-                                        <span className="mt-2 text-sm font-medium text-gray-700">Member</span>
+                                        <span className="mt-2 text-sm font-medium text-gray-700">Employee</span>
                                     </div>
                                 </label>
 
@@ -258,6 +263,18 @@ export default function Register() {
                                     <div className="flex flex-col items-center p-4 border-2 border-gray-300 rounded-lg cursor-pointer peer-checked:border-indigo-600 peer-checked:bg-indigo-50 transition-all hover:border-indigo-400">
                                         <Shield className="h-6 w-6 text-gray-600 peer-checked:text-indigo-600" />
                                         <span className="mt-2 text-sm font-medium text-gray-700">Manager</span>
+                                    </div>
+                                </label>
+                                <label className="relative">
+                                    <input
+                                        type="radio"
+                                        value="admin"
+                                        {...register("role")}
+                                        className="peer sr-only"
+                                    />
+                                    <div className="flex flex-col items-center p-4 border-2 border-gray-300 rounded-lg cursor-pointer peer-checked:border-indigo-600 peer-checked:bg-indigo-50 transition-all hover:border-indigo-400">
+                                        <UserPlus className="h-6 w-6 text-gray-600 peer-checked:text-indigo-600" />
+                                        <span className="mt-2 text-sm font-medium text-gray-700">Admin</span>
                                     </div>
                                 </label>
                             </div>
@@ -295,7 +312,7 @@ export default function Register() {
                         <p className="text-sm text-gray-600">
                             Already have an account?{" "}
                             <Link
-                                to="/login"
+                                to="/"
                                 className="font-semibold text-indigo-600 hover:text-indigo-500 transition-colors"
                             >
                                 Sign in here

@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const ProjectSchema = new mongoose.Schema({
-    title: String,
+    title: {type: String, unique: true},
     description: String,
     manager: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     employees: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
