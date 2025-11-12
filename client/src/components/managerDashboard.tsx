@@ -99,7 +99,7 @@ export default function ManagerDashboard() {
       const res = await API.get('/projects/manager');
       setProjects(res.data.projects || []);
     } catch (err) {
-      import.meta.env.VITE_API_BASE_STATUS === "development" && console.error('Error fetching projects:', err);
+      console.error('Error fetching projects:', err);
     }
   };
 
@@ -108,7 +108,7 @@ export default function ManagerDashboard() {
       const res = await API.get('/tasks');
       setallTasks(res.data.tasks || []);
     } catch (err) {
-      import.meta.env.VITE_API_BASE_STATUS === "development" && console.error('Error fetching projects:', err);
+      console.error('Error fetching projects:', err);
     }
   };
 
@@ -117,7 +117,7 @@ export default function ManagerDashboard() {
       const res = await API.get('/auth/employees');
       setAllEmployees(res.data.employees || []);
     } catch (err) {
-      import.meta.env.VITE_API_BASE_STATUS === "development" && console.error('Error fetching employees:', err);
+      console.error('Error fetching employees:', err);
     }
   };
 
@@ -128,7 +128,7 @@ export default function ManagerDashboard() {
       setNotifications(unreadNotifs);
       setUnreadCount(unreadNotifs.length);
     } catch (err) {
-      import.meta.env.VITE_API_BASE_STATUS === "development" && console.error('Error fetching notifications:', err);
+      console.error('Error fetching notifications:', err);
     }
   };
 
@@ -159,7 +159,7 @@ export default function ManagerDashboard() {
       setDesc('');
       fetchProjects();
     } catch (err: any) {
-     // alert('Error creating project: ' + (err.response?.data?.message || err.message));
+     alert('Error creating project: ' + (err.response?.data?.message || err.message));
     }
   };
 
