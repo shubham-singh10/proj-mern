@@ -19,7 +19,7 @@ const server = http.createServer(app);
 
 // CORS setup
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: process.env.CLIENT_URL || "http://localhost:5173",
   credentials: true
 }));
 
@@ -32,7 +32,7 @@ await connectDB();
 // ---------------- Socket.io ----------------
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: process.env.CLIENT_URL || "http://localhost:5173",
     credentials: true
   }
 });
@@ -58,7 +58,7 @@ io.use((socket, next) => {
 io.on('connection', (socket) => {
   console.log(`User connected: ${socket.user.id}`);
   socket.join(`user_${socket.user.id}`);
-  
+
   // Join project rooms
   socket.on('joinProject', ({ projectId }) => {
     socket.join(`project_${projectId}`);
@@ -84,6 +84,3 @@ app.use("/api/notifications", notifications)
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
-
-const PORT = process.env.PORT || 5001;
-server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
