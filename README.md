@@ -63,7 +63,7 @@ PROJ-MERN/
 
 ### 1️.-->  Clone the Repository
 - git clone https://github.com/shubham-singh10/proj-mern.git
-- cd qa-app
+- cd PROJ-MERN
 
 ### 2.-->  Backend Setup
 - cd backend
