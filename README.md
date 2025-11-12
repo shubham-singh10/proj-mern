@@ -1,7 +1,7 @@
 # 💬 MERN App (Assignment)
 
 A full-stack mini web app built with **MongoDB, Express, React (Vite + TypeScript), and Node.js**.  
-This project was created as part of the **Frontend/MERN Stack Developer assignment** .
+This project was created as part of the **MERN Stack Developer assignment** .
 
 ---
 
