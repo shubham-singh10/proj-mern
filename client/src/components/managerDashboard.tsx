@@ -159,7 +159,7 @@ export default function ManagerDashboard() {
       setDesc('');
       fetchProjects();
     } catch (err: any) {
-      alert('Error creating project: ' + (err.response?.data?.message || err.message));
+     // alert('Error creating project: ' + (err.response?.data?.message || err.message));
     }
   };
 
