@@ -84,3 +84,7 @@ app.use("/api/notifications", notifications)
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
+const PORT = process.env.PORT || 50001;
+server.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});

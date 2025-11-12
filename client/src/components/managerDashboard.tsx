@@ -23,6 +23,8 @@ interface Task {
   description: string;
   assignedTo: Employee;
   deadline?: string;
+  status: string;
+  priority: string;
 }
 
 interface Notification {
@@ -53,6 +55,13 @@ export default function ManagerDashboard() {
   const [showNotificationDropdown, setShowNotificationDropdown] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [latestNotification, setLatestNotification] = useState<Notification | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterStatus, setFilterStatus] = useState('all');
+  const [filterPriority, setFilterPriority] = useState('all');
+  const [filterEmployee, setFilterEmployee] = useState('all');
+  const [filterProject, setFilterProject] = useState('all');
+
+  const [taskPriority, setTaskPriority] = useState('medium');
 
   useEffect(() => {
     const socket = createSocket();
@@ -159,8 +168,8 @@ export default function ManagerDashboard() {
       setDesc('');
       fetchProjects();
     } catch (err: any) {
-     //alert('Error creating project: ' + (err.response?.data?.message || err.message));
-    } finally{
+      //alert('Error creating project: ' + (err.response?.data?.message || err.message));
+    } finally {
       fetchProjects();
     }
   };
@@ -219,14 +228,17 @@ export default function ManagerDashboard() {
         projectId: selectedProject._id,
         title: taskTitle,
         description: taskDesc,
-        assignedTo: selectedEmployeeForTask
+        assignedTo: selectedEmployeeForTask,
+        priority: taskPriority
       });
 
       alert('Task created successfully');
       setShowTaskModal(false);
-      fetchProjects();
     } catch (err: any) {
       alert('Error creating task: ' + (err.response?.data?.message || err.message));
+    } finally {
+      fetchProjects();
+      fetchTask();
     }
   };
 
@@ -245,6 +257,48 @@ export default function ManagerDashboard() {
     if (diffMins < 60) return `${diffMins}m ago`;
     if (diffMins < 1440) return `${Math.floor(diffMins / 60)}h ago`;
     return `${Math.floor(diffMins / 1440)}d ago`;
+  };
+
+  const getFilteredTasks = () => {
+    let filtered = allTasks;
+
+    // Search filter
+    if (searchQuery.trim()) {
+      filtered = filtered.filter(task =>
+        task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        task.description.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    // Status filter
+    if (filterStatus !== 'all') {
+      filtered = filtered.filter(task => task.status === filterStatus);
+    }
+
+    // Priority filter
+    if (filterPriority !== 'all') {
+      filtered = filtered.filter(task => task.priority === filterPriority);
+    }
+
+    // Employee filter
+    if (filterEmployee !== 'all') {
+      filtered = filtered.filter(task => task.assignedTo?._id === filterEmployee);
+    }
+
+    // Project filter
+    if (filterProject !== 'all') {
+      filtered = filtered.filter(task => task.project === filterProject);
+    }
+
+    return filtered;
+  };
+
+  const resetFilters = () => {
+    setSearchQuery('');
+    setFilterStatus('all');
+    setFilterPriority('all');
+    setFilterEmployee('all');
+    setFilterProject('all');
   };
 
   return (
@@ -348,6 +402,162 @@ export default function ManagerDashboard() {
             Create Project
           </button>
         </div>
+        {/* Search & Filters Section - ADD THIS ENTIRE BLOCK */}
+        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">Search & Filter Tasks</h2>
+
+          {/* Search Bar */}
+          <div className="mb-4">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search tasks by title or description..."
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+              <svg className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+          </div>
+
+          {/* Filter Dropdowns */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+            {/* Project Filter */}
+            <select
+              value={filterProject}
+              onChange={e => setFilterProject(e.target.value)}
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <option value="all">All Projects</option>
+              {projects.map(project => (
+                <option key={project._id} value={project._id}>{project.title}</option>
+              ))}
+            </select>
+
+            {/* Status Filter */}
+            <select
+              value={filterStatus}
+              onChange={e => setFilterStatus(e.target.value)}
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <option value="all">All Status</option>
+              <option value="pending">Pending</option>
+              <option value="inprogress">In Progress</option>
+              <option value="completed">Completed</option>
+            </select>
+
+            {/* Priority Filter */}
+            <select
+              value={filterPriority}
+              onChange={e => setFilterPriority(e.target.value)}
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <option value="all">All Priorities</option>
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+            </select>
+
+            {/* Employee Filter */}
+            <select
+              value={filterEmployee}
+              onChange={e => setFilterEmployee(e.target.value)}
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <option value="all">All Employees</option>
+              {allEmployees.map(emp => (
+                <option key={emp._id} value={emp._id}>{emp.name}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Filter Actions */}
+          <div className="flex items-center justify-between">
+            <div className="text-sm text-gray-600">
+              Showing {getFilteredTasks().length} of {allTasks.length} tasks
+            </div>
+            <button
+              onClick={resetFilters}
+              className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+            >
+              Reset Filters
+            </button>
+          </div>
+        </div>
+
+        {/* Filtered Tasks Table - ADD THIS ENTIRE BLOCK */}
+        {(searchQuery || filterStatus !== 'all' || filterPriority !== 'all' ||
+          filterEmployee !== 'all' || filterProject !== 'all') && (
+            <div className="bg-white rounded-lg shadow-md overflow-hidden mb-8">
+              <div className="px-6 py-4 border-b border-gray-200">
+                <h2 className="text-xl font-semibold text-gray-900">Filtered Tasks</h2>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Task</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Project</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Assigned To</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Priority</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Deadline</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {getFilteredTasks().length === 0 ? (
+                      <tr>
+                        <td colSpan={6} className="px-6 py-8 text-center text-gray-500">
+                          No tasks match your filters
+                        </td>
+                      </tr>
+                    ) : (
+                      getFilteredTasks().map(task => {
+                        const project = projects.find(p => p._id === task.project);
+                        return (
+                          <tr key={task._id} className="hover:bg-gray-50">
+                            <td className="px-6 py-4">
+                              <div className="font-medium text-gray-900">{task.title}</div>
+                              <div className="text-sm text-gray-500">{task.description}</div>
+                            </td>
+                            <td className="px-6 py-4 text-sm text-gray-900">
+                              {project?.title || 'N/A'}
+                            </td>
+                            <td className="px-6 py-4 text-sm text-gray-900">
+                              {task.assignedTo?.name || 'Unassigned'}
+                            </td>
+                            <td className="px-6 py-4">
+                              <span className={`px-3 py-1 text-xs font-semibold rounded-full ${task.status === 'completed' ? 'bg-green-100 text-green-800' :
+                                task.status === 'inprogress' ? 'bg-blue-100 text-blue-800' :
+                                  'bg-yellow-100 text-yellow-800'
+                                }`}>
+                                {task.status || 'pending'}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4">
+                              <span className={`px-3 py-1 text-xs font-semibold rounded-full ${task.priority === 'urgent' ? 'bg-red-100 text-red-800' :
+                                task.priority === 'high' ? 'bg-orange-100 text-orange-800' :
+                                  task.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
+                                    'bg-gray-100 text-gray-800'
+                                }`}>
+                                {task.priority || 'medium'}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 text-sm text-gray-900">
+                              {task.deadline ? new Date(task.deadline).toLocaleDateString() : 'No deadline'}
+                            </td>
+                          </tr>
+                        );
+                      })
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
 
         {/* Projects Table */}
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
@@ -512,6 +722,21 @@ export default function ManagerDashboard() {
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="Enter task description"
                   />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Add Priorites
+                  </label>
+                  <select
+                    value={taskPriority}
+                    onChange={e => setTaskPriority(e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  >
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                  </select>
                 </div>
 
                 <div>
