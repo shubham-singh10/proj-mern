@@ -1,4 +1,4 @@
-# 💬 MERN App (Assignment)
+# 💬 MERN Project & Task Management App
 
 A full-stack mini web app built with **MongoDB, Express, React (Vite + TypeScript), and Node.js**.  
 This project was created as part of the **MERN Stack Developer assignment** .
@@ -7,27 +7,34 @@ This project was created as part of the **MERN Stack Developer assignment** .
 
 ## 🚀 Features
 
-### 👤 Authentication
+### 🔐 Authentication & Authorization
 - JWT-based login and registration.
 - Three roles: **Member**, **Admin** and **Manager**.
 - Role-based access.
+- Protected routes with token validation.
 
-### ❓ Project
-- Managers can post new projects.
-- add employee to the project.
-- create a task of perticular project.
-- receive notification project update.
+### 📁 Project Management
+. Managers can:
+    - Create and manage projects.
+    - Add employees to specific projects.
+    - Assign tasks with deadlines and priorities.
+    - Receive real-time notifications on task updates.
 
-### 💬 Employee
-- Employee can update deadline of task.
-- Each answer shows author and role (Member/Manager badge).
+👨‍💻 Employee Portal
+    - View assigned tasks.
+    - Update task status and deadlines.
+    - Trigger real-time updates to the manager dashboard.
 
-### 📊 Admin
-- They can see all the projects and task
+🧩 Admin Panel
+    - View all projects, tasks, and user details.
+    - Monitor overall activity across managers and employees.
 
-### 🔍 Search & Filtering
-- Real-time search by project title.
-- Filter system for better user experience.
+🔍 Search & Filters
+    - Full-text search by project or task title.
+    - Filter by status, priority, or assigned user for faster navigation.
+
+🔥 Real-Time Collaboration
+    - Implemented using Socket.IO for live task updates and manager notifications.
 
 ---
 
@@ -36,6 +43,7 @@ This project was created as part of the **MERN Stack Developer assignment** .
 **Frontend:** React (Vite + TypeScript), TailwindCSS  
 **Backend:** Node.js, Express.js, MongoDB, JWT Authentication  
 **Database:** MongoDB Atlas (or local MongoDB)  
+**Auth:**     JWT + bcrypt
 **Deployment:** Vercel (Frontend) + AWS EC2 (Backend)
 
 ---
@@ -53,7 +61,7 @@ PROJ-MERN/
 │ │ ├── routes/
 │ │ ├── controllers/
 │ │ ├── middleware/
-│ │ └── server.ts
+│ │ └── index.js
 |-- .gitignore
 └── README.md
 
