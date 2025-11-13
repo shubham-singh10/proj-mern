@@ -1,110 +1,110 @@
-# 💬 MERN Project & Task Management App
+# PROJ-MERN — Project & Task Management (MERN)
 
-A full-stack mini web app built with **MongoDB, Express, React (Vite + TypeScript), and Node.js**.  
-This project was created as part of the **MERN Stack Developer assignment** .
-
----
-
-## 🚀 Features
-
-### 🔐 Authentication & Authorization
-- JWT-based login and registration.
-- Three roles: **Member**, **Admin** and **Manager**.
-- Role-based access.
-- Protected routes with token validation.
-
-### 📁 Project Management
-. Managers can:
-    - Create and manage projects.
-    - Add employees to specific projects.
-    - Assign tasks with deadlines and priorities.
-    - Receive real-time notifications on task updates.
-
-👨‍💻 Employee Portal
-    - View assigned tasks.
-    - Update task status and deadlines.
-    - Trigger real-time updates to the manager dashboard.
-
-🧩 Admin Panel
-    - View all projects, tasks, and user details.
-    - Monitor overall activity across managers and employees.
-
-🔍 Search & Filters
-    - Full-text search by project or task title.
-    - Filter by status, priority, or assigned user for faster navigation.
-
-🔥 Real-Time Collaboration
-    - Implemented using Socket.IO for live task updates and manager notifications.
+A compact project & task management app built with MongoDB, Express, React (Vite + TypeScript), and Node.js. Designed for team roles (Admin, Manager, Member) with JWT auth, role-based access, and real-time updates via Socket.IO.
 
 ---
 
-## 🧠 Tech Stack
+## Quick links
 
-**Frontend:** React (Vite + TypeScript), TailwindCSS  
-**Backend:** Node.js, Express.js, MongoDB, JWT Authentication  
-**Database:** MongoDB Atlas (or local MongoDB)  
-**Auth:**     JWT + bcrypt
-**Deployment:** Vercel (Frontend) + AWS EC2 (Backend)
+- Live demo: https://proj-mern-26xk.vercel.app  
+- Repo: https://github.com/shubham-singh10/proj-mern
 
----
+## Table of contents
 
-## 📦 Folder Structure
+- Features
+- Tech stack
+- Folder structure
+- Getting started
+- Environment
+- Development scripts
+- Author & license
+
+## Features
+
+- Authentication & Authorization
+  - JWT-based registration/login
+  - Roles: Member, Manager, Admin
+  - Protected routes and role-based guards
+- Project & Task Management
+  - Create/manage projects
+  - Assign employees to projects
+  - Create tasks with priority, deadlines and status
+- Real-time Collaboration
+  - Live task updates and notifications via Socket.IO
+- Search & Filters
+  - Full-text search and filters by status, priority or assignee
+- Admin Panel
+  - View and manage users, projects and tasks across the system
+
+## Tech stack
+
+- Frontend: React (Vite + TypeScript), TailwindCSS  
+- Backend: Node.js, Express, MongoDB, JWT, bcrypt  
+- Realtime: Socket.IO  
+- Deployment: Vercel (frontend), AWS EC2 (backend)
+
+## Folder structure
 
 PROJ-MERN/
-├── client/ # React + Vite + TypeScript app
-│ └── src/
-│ ├── components/
-│ └── api/
-├── backend/ # Node.js + Express + MongoDB API
-│ ├── src/
-│ │ ├── models/
-│ │ ├── routes/
-│ │ ├── controllers/
-│ │ ├── middleware/
-│ │ └── index.js
-|-- .gitignore
-└── README.md
+├── client/ (React + Vite + TS)  
+└── backend/ (Node + Express + MongoDB)  
+    ├── src/
+    │   ├── controllers/
+    │   ├── middleware/
+    │   ├── models/
+    │   └── routes/
+    ├── .env.example
+    └── index.js
 
----
+## Getting started (local)
 
-## ⚙️ Setup Instructions
+1. Clone
+   - git clone https://github.com/shubham-singh10/proj-mern.git
+   - cd proj-mern
 
-### 1️.-->  Clone the Repository
-- git clone https://github.com/shubham-singh10/proj-mern.git
-- cd PROJ-MERN
+2. Backend
+   - cd backend
+   - cd .env.example .env
+   - npm install
+   - npm run dev (or npm start)
 
-### 2.-->  Backend Setup
-- cd backend
-- .env   # create your own .env file
-- npm install
-- npm run dev | npm start
+3. Frontend
+   - cd ../client
+   - npm install
+   - npm run dev
 
- ###### Example .env ##########
-
-- PORT=5000
-- MONGO_URI=your_mongo_connection_string
-- JWT_SECRET=your_secret_key
-
-
-### 3.-->  Frontend Setup
-
-- cd ./client
-- npm install
-- npm run dev
-
-
-### 4. ---> Access the app
+Default URLs:
 - Frontend: http://localhost:5173
 - Backend API: http://localhost:5001
 
+## Environment variables
 
-### 🌐 Live Demo
+Create backend/.env with at least:
 
-- Frontend (React): https://proj-mern-26xk.vercel.app
+- PORT=5001
+- MONGO_URI=your_mongo_connection_string
+- JWT_SECRET=your_secret_key
+- CLIENT_URL=your_cleint_url
+- NODE_ENV= development  #production for live
 
-### 👨‍💻 Author
+## Development scripts
 
-**Shubham Kumar Singh**
-- 📧 shubhamkumarsinghh@outlook.com
-- 🔗 [LinkedIn](https://www.linkedin.com/in/shubham~kumar~singh/)
-- 💻 [GitHub](https://github.com/shubham-singh10)
+Backend:
+- npm run dev — start with nodemon
+- npm start — production start
+
+Frontend:
+- npm run dev — Vite dev server
+- npm run build — build for production
+
+## Notes
+
+- Uses MongoDB Atlas or local MongoDB.
+- Ensure CORS and Socket.IO origins match between frontend and backend in development.
+
+## Author
+
+Shubham Kumar Singh  
+- Email: shubhamkumarsinghh@outlook.com  
+- GitHub: https://github.com/shubham-singh10  
+- LinkedIn: https://www.linkedin.com/in/shubham-kumar-singhh/
